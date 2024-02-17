@@ -1,34 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CNCController : MonoBehaviour
 {
-    Motor XAxisMotor;
-    GameObject XAxisCart;
-    // Start is called before the first frame update
-    void Start()
-    {
-        XAxisMotor = this.gameObject.AddComponent<Motor>();
-        XAxisMotor.name = "XAxisMotor";
+    public GameObject XAxisMotor;
+    public GameObject YAxisMotor;
+    public GameObject ZAxisMotor;
+    public GameObject Spindle;
 
-        XAxisCart = GameObject.Find("XAxisCart");
+
+    public void ToggleMotor(string _name, bool _inverse){
+        if(_name == "XMotor")
+            ToggleXMotor(_inverse);
+        if(_name == "YMotor")
+            ToggleYMotor(_inverse);
+        if(_name == "ZMotor")
+            ToggleZMotor(_inverse);
+        if(_name == "Spindle")
+            ToggleSpindle(_inverse);
     }
 
-    // Update is called once per frame
-     void Update()
-    {
-        if(XAxisMotor.isRotating)
-            SendCurrentToXMotor();
+    public void ToggleXMotor(bool _inverse){
+        XAxisMotor.GetComponent<Motor>().antiClockWise = _inverse;
+        XAxisMotor.GetComponent<Motor>().isRotating = !XAxisMotor.GetComponent<Motor>().isRotating;
     }
 
-    public void ToggleXMotor(){
-        XAxisMotor.isRotating = !XAxisMotor.isRotating;
+    public void ToggleYMotor(bool _inverse){
+        YAxisMotor.GetComponent<Motor>().antiClockWise = _inverse;
+        YAxisMotor.GetComponent<Motor>().isRotating = !YAxisMotor.GetComponent<Motor>().isRotating;
     }
 
-    private void SendCurrentToXMotor(){
-        XAxisMotor.Rotate();
-        XAxisCart.transform.position = Vector3.MoveTowards(XAxisCart.transform.position, new Vector3(XAxisCart.transform.position.x, XAxisCart.transform.position.y, XAxisCart.transform.position.z - (float)XAxisMotor.stepPerFrame), (float)XAxisMotor.stepPerFrame * Time.deltaTime);
+    public void ToggleZMotor(bool _inverse){
+        ZAxisMotor.GetComponent<Motor>().antiClockWise = _inverse;
+        ZAxisMotor.GetComponent<Motor>().isRotating = !ZAxisMotor.GetComponent<Motor>().isRotating;
     }
+
+    public void ToggleSpindle(bool _inverse){
+        Spindle.GetComponent<Motor>().antiClockWise = _inverse;
+        Spindle.GetComponent<Motor>().isRotating = !Spindle.GetComponent<Motor>().isRotating;
+    } 
 }

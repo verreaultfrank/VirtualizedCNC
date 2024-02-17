@@ -1,23 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Motor : MonoBehaviour
 {
     public decimal stepPerFrame = 0.1m;
-    //From 0 to 359.999 deg
-    public decimal currentRotation = 0;
-    private decimal maxRotation = 360;
     
-    public bool isRotating = false;
+    public bool isRotating {get; set; } = false;
+    public bool antiClockWise = true;
 
-    public void Rotate(bool antiClockWise = false){
-        int rotationMultiplier = (antiClockWise)? -1 : 1;
-        currentRotation += rotationMultiplier*stepPerFrame;
-        if(currentRotation >= maxRotation)
-            currentRotation -= maxRotation;
+    public GameObject attachedLeadScew;  
 
-        Debug.Log("The " + this.name + " rotation is " + currentRotation);
+    public AudioSource audioSource;
+    public AudioClip audioClip;  
+    
+    public void Start(){
+        audioSource.clip = audioClip;
+        audioSource.loop = true;
     }
 
+    public void Update(){
+        if(isRotating){
+            Rotate();
+            if(!audioSource.isPlaying && !attachedLeadScew.GetComponent<LeadScrew>().attachedCart.GetComponent<Cart>().maximumIsReached){
+                audioSource.Play();
+            }else if(audioSource.isPlaying && attachedLeadScew.GetComponent<LeadScrew>().attachedCart.GetComponent<Cart>().maximumIsReached)
+                audioSource.Pause();
+        }
+        else if(audioSource.isPlaying){
+            audioSource.Pause();
+        }
+    }
+
+    public void Rotate(){
+        attachedLeadScew.GetComponent<LeadScrew>().Rotate(antiClockWise);
+    }
 }

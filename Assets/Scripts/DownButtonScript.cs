@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class DownButtonScript : MonoBehaviour
+public class CNCButtonScript : MonoBehaviour
 {
     private XRBaseInteractable interactable;
     private CNCController cNCController;
 
+    public string MotorName;
+
+    public bool Inverse = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,13 +23,7 @@ public class DownButtonScript : MonoBehaviour
 
     public void Clicked(BaseInteractionEventArgs hover){
         if(hover.interactorObject is XRPokeInteractor){
-            cNCController.ToggleXMotor();
+            cNCController.ToggleMotor(MotorName, Inverse);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
